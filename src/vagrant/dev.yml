@@ -1,0 +1,32 @@
+---
+# Arquivo de descrição das máquinas de desenvolvimento (DEV).
+#
+# Sintaxe:
+# - nome:                               <- Nome da VM
+#    box: "asdf/dummy"                  <- Nome do box, pode ser um box local ou escolhido em https://app.vagrantup.com
+#    memory: 1024                       <- Quantidade de memória em megabytes
+#    vcpus: 2                           <- Quantidade de núcleos de processador, não pode exceder o limite físico do host!
+#    networks:                          <- Redes da VM
+#      "172.16.254.1": "172.16.254.33"  <- Formato: <"gateway": "endereço IP do guest">, o gateway da rede de desenvolvimento é OBRIGATORIAMENTE "172.16.254.1"!
+#
+# Fim-sintaxe
+# Mais itens de configuração podem ser adicionados e configurados no Vagrantfile conforme as necessidades do parque.
+#
+# Autor: Leonardo Braga Valim
+
+
+- vm901:
+    box: "generic/centos8s"
+    memory: 512
+    vcpus: 2
+    networks:
+      "172.16.254.1": "172.16.254.2"
+
+- vm902:
+    box: "generic/ubuntu2004"
+    memory: 512
+    vcpus: 2
+    networks:
+      "172.16.254.1": "172.16.254.3"
+    
+...

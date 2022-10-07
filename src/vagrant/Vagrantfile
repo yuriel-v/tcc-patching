@@ -1,0 +1,85 @@
+"""
+Vagrantfile para o Trabalho de Conclusão de Curso em Ciência da Computação.
+
+Aqui são descritos dois ambientes, cada um com duas máquinas virtuais, uma Ubuntu e outra CentOS Stream 8.
+No momento, esses ambientes não são provisionados, ou seja, são instalações limpas não-padronizadas.
+
+Autor: Leonardo Braga Valim
+"""
+
+require "yaml"
+
+
+def parse_network(gateway)
+  if gateway == "172.16.254.1"
+    return "tcc_dev"
+  elsif gateway == "172.16.255.1"
+    return "tcc_prd"
+  else
+    return nil
+  end
+end
+
+
+dev = YAML.load_file("dev.yml")
+prd = YAML.load_file("prd.yml")
+
+
+Vagrant.configure("2") do |config|
+  infrastructure = [dev, prd]  # Mais ambientes podem ser adicionados por aqui
+
+  infrastructure.each do |environment|
+    environment.each do |vm|
+      vm.each do |name, cfg|
+        config.vm.synced_folder('.', '/vagrant', disabled: true)  # Geralmente desnecessário e impossível com o provedor libvirt
+        config.ssh.insert_key = true
+
+        config.vm.define name do |mch|
+          mch.vm.hostname = name
+          mch.vm.box = cfg["box"]
+
+          cfg["networks"].each do |gtway, ip_addr|
+            mch.vm.network :private_network,
+              :ip => ip_addr,
+              :gateway => gtway,
+              :autostart => true,
+              :netmask => "255.255.255.0",
+              :libvirt__network_name => parse_network(gtway),
+              :libvirt__netmask => "255.255.255.0",
+              :libvirt__guest_ipv6 => "no",  # Sem necessidade de IPv6 nesse caso de uso
+              :libvirt__domain_name => "tcc.net",
+              :libvirt__forward_mode => "open"
+
+          end
+
+          mch.vm.provider :libvirt do |p|
+            p.driver = "kvm"
+            p.title = "tcc"
+            p.default_prefix = ""
+            p.keymap = "pt-br"
+            p.watchdog :model => "i6300esb", :action => "reset"
+
+            p.memory = cfg["memory"]  # Em Megabytes
+            p.cpus = cfg["vcpus"]
+            p.cpu_model = "kvm64"
+
+            # As configurações abaixo são particulares de cada infra.
+            # Define uma "rede de manutenção" para o Vagrant atuar sobre a VM.
+            # Sobrescreva com as suas configurações ou comente o código.
+            p.management_network_name = "default"
+            p.management_network_address = "172.30.0.0/16"
+            p.management_network_mode = "nat"
+            p.management_network_guest_ipv6 = false
+          end
+
+          mch.vm.provider "virtualbox" do |v|
+            v.name = name
+            
+            v.memory = cfg["memory"]
+            v.cpus = cfg["vcpus"]
+          end
+        end
+      end
+    end
+  end
+end
