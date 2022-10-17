@@ -38,6 +38,10 @@ Vagrant.configure("2") do |config|
           mch.vm.hostname = name
           mch.vm.box = cfg["box"]
 
+          if cfg.has_key?("ansible") and cfg["ansible"]
+            mch.vm.provision "shell", path: "scripts/ansible.sh"
+          end
+
           cfg["networks"].each do |gtway, ip_addr|
             mch.vm.network :private_network,
               :ip => ip_addr,

@@ -29,4 +29,12 @@
     networks:
       "172.16.255.1": "172.16.255.3"
 
+- vm913:
+    box: "generic/centos8s"
+    memory: 1024
+    vcpus: 4
+    networks:
+        "172.16.255.1": "172.16.255.3"  # PRD
+        "172.16.254.1": "172.16.254.3"  # DEV
+    ansible: true
 ...
