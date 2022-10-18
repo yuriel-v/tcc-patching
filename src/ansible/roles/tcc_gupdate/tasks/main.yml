@@ -1,0 +1,16 @@
+---
+- name: Gather OS Family fact
+  setup:
+    filter: os_family
+
+- name: "Update all packages with DNF"
+  when: ansible_facts['os_family'] | lower == 'redhat' 
+  dnf:
+    name: *
+    state: latest
+
+- name: "Update all packages with APT"
+  when: ansible_facts['os_family'] | lower == 'debian'
+  apt:
+    name: *
+    state: latest
