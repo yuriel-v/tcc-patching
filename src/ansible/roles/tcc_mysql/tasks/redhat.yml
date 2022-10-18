@@ -1,0 +1,6 @@
+---
+- name: Ensure MySQL install
+  dnf:
+    name: mysql-server
+    status: "{{ 'latest' if tcc_mysql_update | bool else 'present' }}"
+    update_cache: yes
