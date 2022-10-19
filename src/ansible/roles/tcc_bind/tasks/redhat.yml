@@ -1,0 +1,12 @@
+---
+- name: Ensure BIND9 install
+  dnf:
+    name: bind
+    state: "{{ 'latest' if tcc_bind_update | bool else 'present' }}"
+    update_cache: yes
+
+- name: Open port 53
+  firewalld:
+    permanent: yes
+    service: dns
+    state: enabled

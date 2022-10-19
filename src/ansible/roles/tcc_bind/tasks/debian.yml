@@ -1,0 +1,13 @@
+---
+- name: Ensure BIND9 install
+  apt:
+    name: bind9
+    state: "{{ 'latest' if tcc_bind_update | bool else 'present' }}"
+    update_cache: yes
+
+- name: Open port 53
+  ufw:
+    rule: allow
+    port: dns
+    proto: any
+
