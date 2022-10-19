@@ -4,3 +4,9 @@
     name: mysql-server
     state: "{{ 'latest' if tcc_mysql_update | bool else 'present' }}"
     update_cache: yes
+
+- name: Open port 3306
+  ufw:
+    rule: allow
+    port: 3306
+    proto: tcp
