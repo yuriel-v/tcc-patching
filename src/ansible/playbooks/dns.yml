@@ -1,0 +1,20 @@
+---
+- name: BIND9 (DNS Server) provisioning play
+  hosts: "{{ 'dns' if 'dns' in groups else 'all' }}"
+  gather_facts: false
+  vars_prompt:
+    - name: ansible_user
+      prompt: "Username (default 'vagrant'):"
+      default: "vagrant"
+      private: false
+    
+    - name: ansible_ssh_pass
+      prompt: "SSH Password:"
+  
+  pre_tasks:
+    - name: Gather OS family fact
+      setup:
+        filter: ansible_os_family
+    
+  roles:
+    - role: tcc_bind
