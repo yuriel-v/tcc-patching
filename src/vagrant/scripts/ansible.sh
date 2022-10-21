@@ -27,10 +27,10 @@ if ansible --version >/dev/null; then
     mkdir "$timestamp"
     cd "$timestamp"
 
-    git init >/dev/null
+    git init -b master >/dev/null
     git config core.sparsecheckout true >/dev/null
     echo "src/ansible" >> .git/info/sparse-checkout
-    git remote add -f origin https://github.com/yuriel-v/tcc_patching.git >/dev/null
+    git remote add -f origin https://github.com/yuriel-v/tcc-patching.git >/dev/null
     git pull origin master >/dev/null
 
     mv src/ansible /home/vagrant
