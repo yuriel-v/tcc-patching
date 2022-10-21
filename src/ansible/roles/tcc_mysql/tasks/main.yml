@@ -1,10 +1,6 @@
 ---
-- name: Gather OS Family fact
-  setup:
-    filter: os_family
-
 - name: Include distro-specific tasks
   include_tasks:
-    file: "{{ ansible_facts['os_family'] | lower }}.yml"
+    file: "{{ ansible_os_family | lower }}.yml"
     apply:
       become: yes
