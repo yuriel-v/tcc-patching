@@ -36,6 +36,7 @@ if ansible --version >/dev/null; then
     mv src/ansible /home/vagrant
     cd /
     rm -rf "/tmp/$timestamp"
+    chown -R vagrant:vagrant /home/vagrant/ansible
 else
     echo "!!! Ansible install failed."
 fi
