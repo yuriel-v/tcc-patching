@@ -8,6 +8,6 @@
 - name: Open port 53
   ufw:
     rule: allow
-    port: dns
+    port: 53
     proto: any
 
