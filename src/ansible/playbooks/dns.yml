@@ -2,14 +2,16 @@
 - name: BIND9 (DNS Server) provisioning play
   hosts: "{{ 'dns' if 'dns' in groups else 'all' }}"
   gather_facts: false
+  vars:
+    ansible_ssh_common_args: "-o StrictHostKeyChecking=no"
   vars_prompt:
     - name: ansible_user
-      prompt: "Username (default 'vagrant'):"
+      prompt: "Username"
       default: "vagrant"
       private: false
     
     - name: ansible_ssh_pass
-      prompt: "SSH Password:"
+      prompt: "SSH Password"
   
   pre_tasks:
     - name: Gather OS family fact
