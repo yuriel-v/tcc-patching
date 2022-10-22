@@ -41,6 +41,10 @@ Vagrant.configure("2") do |config|
           if cfg.has_key?("ansible") and cfg["ansible"]
             mch.vm.provision "shell", path: "scripts/ansible.sh"
           end
+          mch.vm.provision "shell", inline: <<-SHELL  # Habilitando SSH via usuário+senha, não recomendado para ambiente de trabalho!
+            sed -i 's/PasswordAuthentication no/PasswordAuthentication yes/g' /etc/ssh/sshd_config    
+            systemctl restart sshd.service
+          SHELL
 
           cfg["networks"].each do |gtway, ip_addr|
             mch.vm.network :private_network,
@@ -51,8 +55,8 @@ Vagrant.configure("2") do |config|
               :libvirt__network_name => parse_network(gtway),
               :libvirt__netmask => "255.255.255.0",
               :libvirt__guest_ipv6 => "no",  # Sem necessidade de IPv6 nesse caso de uso
-              :libvirt__domain_name => "tcc.net",
-              :libvirt__forward_mode => "open"
+              :libvirt__domain_name => "tcc.net"
+              #:libvirt__forward_mode => "open"  # Descomente e adicione uma vírgula acima para habilitar comunicação entre máquinas DEV e PRD
 
           end
 
