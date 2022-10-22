@@ -1,12 +1,14 @@
 ---
 - name: "Update all packages with DNF"
-  when: ansible_os_family | lower == 'redhat' 
+  when: ansible_os_family | lower == 'redhat'
+  become: true
   dnf:
     name: '*'
     state: latest
 
 - name: "Update all packages with APT"
   when: ansible_os_family | lower == 'debian'
+  become: true
   apt:
     name: '*'
     state: latest
